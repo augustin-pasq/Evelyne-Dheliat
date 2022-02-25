@@ -122,7 +122,7 @@ async function getWeather(search) {
 
 // Daily message
 client.on("ready", () => {
-  cron.schedule(`0 0 6 * * *`, () => {
+  cron.schedule(`0 45 5 * * *`, () => {
     if (dailyWeatherState == true) {
       const weather = Promise.resolve(getWeather(dailyWeatherPlace));
       weather.then((weatherEmbed) => {

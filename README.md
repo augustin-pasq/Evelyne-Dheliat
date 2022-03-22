@@ -1,12 +1,28 @@
 # Évelyne Dhéliat
 
+## Available commands
 
-**How to use the bot:**
+- Get the current weather for a location
 
-Use ``!weather -c`` command followed by the place for which one you want to know the weather
+    `!weather -c [place]`
+    
+- Access the current settings for the bot (only for server administrators)
+    
+    `!weather -s` : see the global settings
+    
+    `!weather -s daily-weather [on|off]` : turn on or off the daily weather report
+    
+    `!weather -s daily-weather-place [place]` : change the daily weather location
+    
+    `!weather -s daily-weather-channel [#channel]` : change the channel in which the daily report is sent
+    
+    `!weather -s help` : see the daily report help page
+    
+- See the general help page
+    
+    `!weather -h`
+    
 
-    ex: !weather Paris
+## Author
 
-You can change settings with the ``!weather -s`` command. Send ``!weather -s help`` to get a list of available settings (but actually this command is not available yet, so currently you can't change settings lmao)
-
-Asguitun ©
+© Asguitun

@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  moodisc:
+    image: registry.ozna.me/evelyne-dheliat:latest
+    container_name: evelyne-dheliat
+    restart: always
+    env_file:
+      - .env

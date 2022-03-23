@@ -6,7 +6,7 @@ var accents = require("remove-accents");
 
 // Initialize Discord bot
 const client = new Discord.Client();
-const DISCORD_TOKEN = require("./token.js");
+const DISCORD_TOKEN = process.env.DISCORD_TOKEN || require("./token.js");
 
 // Define constants
 const API_BASE_CITY = "https://nominatim.openstreetmap.org/search/";

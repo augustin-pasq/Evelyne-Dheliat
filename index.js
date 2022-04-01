@@ -50,6 +50,7 @@ async function getWeather(search) {
   apiWeatherURL = `${API_BASE_WEATHER}lat=${latitude}&lon=${longitude}${API_TAIL_WEATHER}`;
   const WeatherResponse = await fetch(apiWeatherURL);
   const WeatherData = await WeatherResponse.json();
+  console.log(apiWeatherURL)
 
   // Values rounding
   var temp = Math.round(WeatherData.data[0].temp);
@@ -119,12 +120,12 @@ async function getWeather(search) {
       { name: "Chutes de neige", value: `${snow} mm/h`, inline: true },
       {
         name: "Lever du soleil",
-        value: WeatherData.data[0].sunrise,
+        value: parseInt(WeatherData.data[0].sunrise.split(":")[0]) + 2 + ":" + WeatherData.data[0].sunrise.split(":")[1],
         inline: true,
       },
       {
         name: "Coucher du soleil",
-        value: WeatherData.data[0].sunset,
+        value: parseInt(WeatherData.data[0].sunset.split(":")[0]) + 2 + ":" + WeatherData.data[0].sunrise.split(":")[1],
         inline: true,
       },
       { name: "Qualité de l'air", value: aqi, inline: true }
@@ -137,7 +138,7 @@ async function getWeather(search) {
 
 // Daily message
 client.on("ready", () => {
-  cron.schedule(`0 45 5 * * *`, () => {
+  cron.schedule(`0 45 6 * * *`, () => {
     if (dailyWeatherState == true) {
       const weather = Promise.resolve(getWeather(dailyWeatherPlace));
       weather.then((weatherEmbed) => {

@@ -91,6 +91,20 @@ async function getWeather(search) {
     var aqi = `Dangereux (${WeatherData.data[0].aqi})`;
   }
 
+  // Sunset time
+  var [sunsetHour, sunsetMinutes] = WeatherData.data[0].sunset.split(":");
+  var sunset = new Date();
+  sunset.setUTCHours(sunsetHour);
+  sunset.setUTCMinutes(sunsetMinutes);
+  sunset = sunset.toLocaleTimeString('fr-FR').split(":");
+
+  // Sunrise time
+  var [sunriseHour, sunriseMinutes] = WeatherData.data[0].sunrise.split(":");
+  var sunrise = new Date();
+  sunrise.setUTCHours(sunriseHour);
+  sunrise.setUTCMinutes(sunriseMinutes);
+  sunrise = sunrise.toLocaleTimeString('fr-FR').split(":");
+
   // Bot's answer preset
   const weatherEmbed = new Discord.MessageEmbed()
     .setColor("#FFD800")
@@ -120,12 +134,12 @@ async function getWeather(search) {
       { name: "Chutes de neige", value: `${snow} mm/h`, inline: true },
       {
         name: "Lever du soleil",
-        value: parseInt(WeatherData.data[0].sunrise.split(":")[0]) + 2 + ":" + WeatherData.data[0].sunrise.split(":")[1],
+        value: sunrise[0] + ":" + sunrise[1],
         inline: true,
       },
       {
         name: "Coucher du soleil",
-        value: parseInt(WeatherData.data[0].sunset.split(":")[0]) + 2 + ":" + WeatherData.data[0].sunrise.split(":")[1],
+        value: sunset[0] + ":" + sunset[1],
         inline: true,
       },
       { name: "Qualité de l'air", value: aqi, inline: true }

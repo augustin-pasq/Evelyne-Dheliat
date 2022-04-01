@@ -16,12 +16,12 @@ RUN npm install
 # remove unused modules
 RUN clean-modules --yes
 
-# don't run container as root
-USER node
-
-# change timezone
+# add timezone change
 RUN apk add --no-cache tzdata
 ENV TZ=Europe/Paris
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# don't run container as root
+USER node
 
 CMD [ "node", "index.js" ]

@@ -1,0 +1,6 @@
+# ignore everything
+*
+
+# except..
+!package.json
+!index.js

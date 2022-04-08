@@ -1,18 +1,19 @@
 // Import dependencies
-const Discord = require("discord.js");
-const fetch = require("node-fetch");
+const { Client, Intents, MessageEmbed } = require('discord.js');
 var cron = require("node-cron");
+const { token } = require('./config.json');
+// Dependencies
+const fetch = require("node-fetch");
 var accents = require("remove-accents");
 
-// Initialize Discord bot
-const client = new Discord.Client();
-const DISCORD_TOKEN = process.env.DISCORD_TOKEN || require("./token.js");
-
-// Define constants
+// Constants
 const API_BASE_CITY = "https://nominatim.openstreetmap.org/search/";
 const API_TAIL_CITY = "?format=json&limit=1";
 const API_BASE_WEATHER = "https://api.weatherbit.io/v2.0/current?";
 const API_TAIL_WEATHER = "&lang=fr&key=0a91045a07174a34bcf3ee5fe6587a5f";
+
+// Initialize Discord bot
+const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
 // Define global variables
 var dailyWeatherState = true;
@@ -21,7 +22,7 @@ var dailyWeatherPlace = "Vannes";
 var dailyWeatherChannel = "927953774889300068";
 
 // Bot launching
-client.on("ready", () => {
+client.once('ready', () => {
   client.user.setActivity("la météo", { type: "WATCHING" });
   console.log("Logged in as Évelyne Dhéliat!");
 });
@@ -35,10 +36,16 @@ async function getWeather(search) {
   const CityResponse = await fetch(apiCityURL);
   const CityData = await CityResponse.json();
 
-  const FAIL = "cette ville n'existe pas !";
+  const FAIL = new MessageEmbed()
+    .setColor("#FFD800")
+    .setTitle(
+      "Cette ville n'existe pas"
+    )
+    .setTimestamp()
+  //.setFooter(`Météo à ${WeatherData.data[0].city_name}`);
 
   if (!CityData[0]) {
-    return FAIL;
+    return { embeds: [FAIL] };
   } else {
     var latitude = CityData[0].lat;
     var longitude = CityData[0].lon;
@@ -50,7 +57,7 @@ async function getWeather(search) {
   apiWeatherURL = `${API_BASE_WEATHER}lat=${latitude}&lon=${longitude}${API_TAIL_WEATHER}`;
   const WeatherResponse = await fetch(apiWeatherURL);
   const WeatherData = await WeatherResponse.json();
-  console.log(apiWeatherURL)
+  console.log(apiWeatherURL);
 
   // Values rounding
   var temp = Math.round(WeatherData.data[0].temp);
@@ -96,17 +103,17 @@ async function getWeather(search) {
   var sunset = new Date();
   sunset.setUTCHours(sunsetHour);
   sunset.setUTCMinutes(sunsetMinutes);
-  sunset = sunset.toLocaleTimeString('fr-FR').split(":");
+  sunset = sunset.toLocaleTimeString("fr-FR").split(":");
 
   // Sunrise time
   var [sunriseHour, sunriseMinutes] = WeatherData.data[0].sunrise.split(":");
   var sunrise = new Date();
   sunrise.setUTCHours(sunriseHour);
   sunrise.setUTCMinutes(sunriseMinutes);
-  sunrise = sunrise.toLocaleTimeString('fr-FR').split(":");
+  sunrise = sunrise.toLocaleTimeString("fr-FR").split(":");
 
   // Bot's answer preset
-  const weatherEmbed = new Discord.MessageEmbed()
+  const weatherEmbed = new MessageEmbed()
     .setColor("#FFD800")
     .setTitle(
       `La météo à ${cityNameDisplay[0]}, ${WeatherData.data[0].country_code} :`
@@ -145,9 +152,9 @@ async function getWeather(search) {
       { name: "Qualité de l'air", value: aqi, inline: true }
     )
     .setTimestamp()
-    .setFooter(`Météo à ${WeatherData.data[0].city_name}`);
+  //.setFooter(`Météo à ${WeatherData.data[0].city_name}`);
 
-  return weatherEmbed;
+  return { embeds: [weatherEmbed] };
 }
 
 // Daily message
@@ -182,18 +189,8 @@ client.on("message", async (message) => {
   if (message.content.startsWith("!weather")) {
     var parameters = message.content.split(" ");
 
-    // Current weather on demand
-    if (parameters[1] == "-c") {
-      const weather = Promise.resolve(
-        getWeather(message.content.substring(12))
-      );
-      weather.then((weatherEmbed) => {
-        message.reply(weatherEmbed);
-      });
-    }
-
     // Settings
-    else if (parameters[1] == "-s") {
+    if (parameters[1] == "-s") {
       if (message.member.permissionsIn(message.channel).has("ADMINISTRATOR")) {
         // Settings state
         if (!parameters[2]) {
@@ -360,5 +357,46 @@ client.on("message", async (message) => {
   }
 });
 
-// Bot login
-client.login(DISCORD_TOKEN);
+client.on('interactionCreate', async interaction => {
+	if (!interaction.isCommand()) return;
+
+	const { commandName } = interaction;
+  const givenPlace = interaction.options.getString('place');
+
+	if (commandName === 'current') {
+    const weather = Promise.resolve(
+      getWeather(givenPlace)
+    );
+    weather.then(async({embeds: [weatherEmbed]}) => {
+      await interaction.reply({embeds: [weatherEmbed]});
+    });
+	} else if (commandName === 'settings') {
+		await interaction.reply('Server info.');
+	} else if (commandName === 'help') {
+    const settingsEmbed = new MessageEmbed()
+    .setColor("#FFD800")
+    .setTitle("Voici Évelyne Dhéliat")
+    .setDescription("Guide pour utiliser le bot")
+    .setThumbnail(
+      "https://cdn.discordapp.com/avatars/766729142325608448/33bbb8fb64ccdcf1aede33eb45161045.webp"
+    )
+    .addFields(
+      {
+        name: "Météo actuelle",
+        value: "``/current Ville``",
+        inline: false,
+      },
+      {
+        name: "Météo prévisionnelle",
+        value: "``/forecast Ville``",
+        inline: false,
+      },
+      { name: "Réglages", value: "``/settings Réglage``", inline: false },
+      { name: "Aide", value: "``/help``", inline: false }
+    )
+    .setTimestamp()
+    await interaction.reply({embeds: [settingsEmbed]})
+  }
+});
+
+client.login(token);

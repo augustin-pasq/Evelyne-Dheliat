@@ -1,0 +1,27 @@
+const { SlashCommandBuilder } = require('@discordjs/builders');
+const { REST } = require('@discordjs/rest');
+const { Routes } = require('discord-api-types/v9');
+const { clientId, guildId, token } = require('./config.json');
+
+const commands = [
+	new SlashCommandBuilder()
+	.setName('current')
+	.setDescription('Current weather for the given place')
+	.addStringOption(option =>
+		option.setName('place')
+			.setDescription('The place you want to know the weather for')
+			.setRequired(true)),
+	new SlashCommandBuilder()
+		.setName('settings')
+		.setDescription("Bot's settings"),
+	new SlashCommandBuilder()
+		.setName('help')
+		.setDescription("Help with the bot"),
+]
+	.map(command => command.toJSON());
+
+const rest = new REST({ version: '9' }).setToken(token);
+
+rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: commands })
+	.then(() => console.log('Successfully registered application commands.'))
+	.catch(console.error);

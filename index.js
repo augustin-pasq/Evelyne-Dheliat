@@ -2,6 +2,7 @@
 const { Client, Intents, MessageEmbed } = require('discord.js');
 var cron = require("node-cron");
 const { token } = require('./config.json');
+token = process.env.DISCORD_TOKEN || token;
 // Dependencies
 const fetch = require("node-fetch");
 var accents = require("remove-accents");

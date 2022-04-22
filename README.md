@@ -25,4 +25,4 @@
 
 ## Author
 
-© Asguitun
+© Augustin Pasquier

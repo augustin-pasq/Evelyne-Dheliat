@@ -2,15 +2,15 @@
 FROM node:16.14.0-alpine
 
 # create destination directory
-RUN mkdir -p /usr/src/moodisc
-WORKDIR /usr/src/moodisc
-RUN chown -R node:node /usr/src/moodisc
+RUN mkdir -p /usr/src/evelyne-dheliat
+WORKDIR /usr/src/evelyne-dheliat
+RUN chown -R node:node /usr/src/evelyne-dheliat
 
 # install clean-modules
 RUN npm install -g clean-modules
 
 # copy the app, note .dockerignore
-COPY --chown=node:node . /usr/src/moodisc
+COPY --chown=node:node . /usr/src/evelyne-dheliat
 RUN npm install
 
 # remove unused modules

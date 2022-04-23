@@ -2,7 +2,7 @@
 const { Client, Intents } = require('discord.js');
 var cron = require("node-cron");
 const getCurrentWeather = require('./getCurrentWeather.js');
-const { token } = require('./config.json');
+const token = process.env.DISCORD_TOKEN || require('./config.json').token;
 
 // Initialize Discord bot
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });

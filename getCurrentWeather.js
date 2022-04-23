@@ -2,7 +2,7 @@
 const { MessageEmbed } = require('discord.js');
 const fetch = require("node-fetch");
 var accents = require("remove-accents");
-const { apiKey } = require('./config.json');
+const apiKey = process.env.API_KEY || require('./config.json').apiKey;
 
 // Function
 async function getCurrentWeather(search) {

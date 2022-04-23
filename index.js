@@ -22,7 +22,7 @@ client.on("ready", () => {
             const dailyMessage = `Nous sommes le **${today.toLocaleDateString("fr-FR", options)}**, voici le bulletin météo du jour`
 
             weather.then(async ({ embeds: [weatherEmbed] }) => {
-                await client.channels.cache.get("766726463005130765").send({
+                await client.channels.cache.get("927953774889300068").send({
                     content: dailyMessage,
                     embeds: [weatherEmbed]
                   });

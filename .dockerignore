@@ -4,3 +4,5 @@
 # except..
 !package.json
 !index.js
+!getCurrentWeather.js
+!deploy-commands.js

@@ -15,7 +15,7 @@ client.once('ready', () => {
 
 // Daily message
 client.on("ready", () => {
-    cron.schedule(`0 * * * * *`, () => {
+    cron.schedule(`0 45 6 * * *`, () => {
         const today = new Date();
         const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
         const dailyMessage = `Nous sommes le **${today.toLocaleDateString("fr-FR", options)}**, voici le bulletin météo du jour`

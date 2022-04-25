@@ -89,7 +89,7 @@ async function getCurrentWeather(search) {
             { name: "Qualité de l'air", value: aqi, inline: true }
         )
         .setTimestamp()
-        .setFooter({ text: `Météo à ${weatherData.data[0].city_name}`, iconURL: "https://cdn.discordapp.com/app-icons/766729142325608448/8eac1c43e5011e7797dd34d106cb67f4.png" })
+        .setFooter({ text: `Météo à ${cityNameDisplay[0]}`, iconURL: "https://cdn.discordapp.com/app-icons/766729142325608448/8eac1c43e5011e7797dd34d106cb67f4.png" })
 
     return { embeds: [weatherEmbed] };
 };

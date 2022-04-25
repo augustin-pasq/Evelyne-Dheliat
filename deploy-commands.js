@@ -4,15 +4,39 @@ const { Routes } = require('discord-api-types/v9');
 const { clientId, guildId, token } = require('./config.json');
 
 const commands = [
-	new SlashCommandBuilder()
-		.setName('current')
-		.setDescription('Current weather for the given place')
-		.addStringOption(option =>
-			option.setName('place')
-				.setDescription('The place you want to know the weather for')
-				.setRequired(true)),
+	{
+		name: "current",
+		description: "Current weather for the given place",
+		options: [
+			{
+				name: "place",
+				description: "The place you want to know the weather for",
+				type: 3, // String
+				required: true
+			}
+		]
+	},
+	{
+		name: "forecast",
+		description: "Forecast weather for the given place",
+		options: [
+			{
+				name: "place",
+				description: "The place you want to know the weather for",
+				type: 3, // String
+				required: true
+			},
+			{
+				name: "forecast",
+				description: "The number of days of the forecast",
+				type: 4, // Integer
+				min_value: 1,
+				max_value: 15,
+				required: true
+			}
+		]
+	}
 ]
-	.map(command => command.toJSON());
 
 const rest = new REST({ version: '9' }).setToken(token);
 

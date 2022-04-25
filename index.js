@@ -15,18 +15,18 @@ client.once('ready', () => {
 
 // Daily message
 client.on("ready", () => {
-    cron.schedule(`0 45 6 * * *`, () => {
-            const weather = Promise.resolve(getCurrenttWeather("Vannes"));
-            const today = new Date();
-            const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
-            const dailyMessage = `Nous sommes le **${today.toLocaleDateString("fr-FR", options)}**, voici le bulletin météo du jour`
+    cron.schedule(`0 * * * * *`, () => {
+        const today = new Date();
+        const options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
+        const dailyMessage = `Nous sommes le **${today.toLocaleDateString("fr-FR", options)}**, voici le bulletin météo du jour`
 
-            weather.then(async ({ embeds: [weatherEmbed] }) => {
-                await client.channels.cache.get("927953774889300068").send({
-                    content: dailyMessage,
-                    embeds: [weatherEmbed]
-                  });
+        const weather = Promise.resolve(getCurrentWeather("Vannes"));
+        weather.then(({ embeds: [weatherEmbed] }) => {
+            client.channels.cache.get("927953774889300068").send({
+                content: dailyMessage,
+                embeds: [weatherEmbed]
             });
+        });
     });
 });
 

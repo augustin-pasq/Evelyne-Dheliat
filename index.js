@@ -4,6 +4,7 @@ var cron = require("node-cron");
 const getCurrentWeather = require('./getCurrentWeather.js');
 const getForecastWeather = require('./getForecastWeather.js');
 const token = process.env.DISCORD_TOKEN || require('./config.json').token;
+const { channel } = require("./config.json");
 
 // Initialize Discord bot
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
@@ -23,7 +24,7 @@ client.on("ready", () => {
 
         const weather = Promise.resolve(getForecastWeather("Vannes", 0));
         weather.then(({ embeds: [weatherEmbed] }) => {
-            client.channels.cache.get("927953774889300068").send({
+            client.channels.cache.get(channel).send({
                 content: dailyMessage,
                 embeds: [weatherEmbed]
             });

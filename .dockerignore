@@ -1,9 +1,0 @@
-# ignore everything
-*
-
-# except..
-!package.json
-!index.js
-!getCurrentWeather.js
-!getForecastWeather.js
-!deploy-commands.js

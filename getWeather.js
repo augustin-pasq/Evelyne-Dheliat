@@ -6,7 +6,7 @@ const apiKey = require('./config.json').apiKey
 
 // Function
 async function getWeather(search, mode, days) {
-    let apiCityURL = `https://nominatim.openstreetmap.org/search/${accents.remove(search)}?format=json&limit=1`
+    let apiCityURL = `https://nominatim.openstreetmap.org/search?q=${accents.remove(search)}&format=json&limit=1`
 
     // Fetch city inputted to get its coordinates
     const cityData = await (await fetch(apiCityURL)).json()
@@ -76,7 +76,7 @@ async function getWeather(search, mode, days) {
         sunrise.setUTCHours(parseInt(sunriseHour))
         sunrise.setUTCMinutes(parseInt(sunriseMinutes))
         sunrise.toLocaleTimeString("fr-FR").split(":")
-        weatherObject.sunset = sunrise[0] + ":" + sunrise[1]
+        weatherObject.sunrise = sunrise[0] + ":" + sunrise[1]
 
         weatherEmbed
             .addField("Qualité de l'air", weatherObject.airQuality, true)

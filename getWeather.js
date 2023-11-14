@@ -44,7 +44,6 @@ async function getWeather(search, mode, days) {
 
         weatherObject.countryCode       = weatherData.data[0].country_code
         weatherObject.thumbnail         = weatherData.data[0].weather.icon
-
         weatherObject.weather           = weatherData.data[0].weather.description
         weatherObject.temp              = Math.round(weatherData.data[0].temp)
         weatherObject.feeling           = Math.round(weatherData.data[0].app_temp)
@@ -66,21 +65,21 @@ async function getWeather(search, mode, days) {
         // Sunset time
         let [sunsetHour, sunsetMinutes] = weatherData.data[0].sunset.split(":")
         let sunset = new Date()
-        sunset.setUTCHours(sunsetHour)
-        sunset.setUTCMinutes(sunsetMinutes)
+        sunset.setUTCHours(parseInt(sunsetHour))
+        sunset.setUTCMinutes(parseInt(sunsetMinutes))
         sunset.toLocaleTimeString("fr-FR").split(":")
-        weatherObject.sunset = weatherObject.sunset[0] + ":" + weatherObject.sunset[1]
+        weatherObject.sunset = sunset[0] + ":" + sunset[1]
 
         // Sunrise time
         let [sunriseHour, sunriseMinutes] = weatherData.data[0].sunrise.split(":")
         let sunrise = new Date()
-        sunrise.setUTCHours(sunriseHour)
-        sunrise.setUTCMinutes(sunriseMinutes)
+        sunrise.setUTCHours(parseInt(sunriseHour))
+        sunrise.setUTCMinutes(parseInt(sunriseMinutes))
         sunrise.toLocaleTimeString("fr-FR").split(":")
-        weatherObject.sunrise = weatherObject.sunrise[0] + ":" + weatherObject.sunrise[1]
+        weatherObject.sunset = sunrise[0] + ":" + sunrise[1]
 
         weatherEmbed
-            .addFields({ name: "Qualité de l'air", value: weatherObject.airQuality, inline: true })
+            .addField("Qualité de l'air", weatherObject.airQuality, true)
     }
 
     // Forecast weather
@@ -90,7 +89,6 @@ async function getWeather(search, mode, days) {
 
         weatherObject.countryCode       = weatherData['country_code']
         weatherObject.thumbnail         = weatherData['data'][days]['weather']['icon']
-
         weatherObject.weather           = weatherData['data'][days]['weather']['description']
         weatherObject.temp              = Math.round(weatherData['data'][days]['temp'])
         weatherObject.feeling           = Math.round((weatherData['data'][days]['app_max_temp'] + weatherData['data'][days]['app_max_temp']) / 2)
@@ -105,25 +103,23 @@ async function getWeather(search, mode, days) {
 
         weatherEmbed
             .setDescription(`**Prévisions pour le ${(new Date(weatherData['data'][days]['valid_date'])).toLocaleDateString("fr-FR", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}**`)
-            .addFields({ name: "Probabilité de précipitations", value: `${weatherData['data'][days]['pop']} %`, inline: true },)
+            .addField("Probabilité de précipitations", `${weatherData['data'][days]['pop']} %`, true)
     }
 
     weatherEmbed
         .setTitle(`La météo à ${cityNameDisplay[0]}, ${weatherObject.countryCode} :`)
         .setThumbnail(`https://www.weatherbit.io/static/img/icons/${weatherObject.thumbnail}.png`)
-        .addFields(
-            { name: "Météo", value: weatherObject.weather, inline: true },
-            { name: "Température", value: `${weatherObject.temp}°C`, inline: true },
-            { name: "Ressenti", value: `${weatherObject.feeling}°C`, inline: true },
-            { name: "Vitesse du vent", value: `${weatherObject.windSpeed} km/h`, inline: true },
-            { name: "Direction du vent", value: weatherObject.windDirection, inline: true },
-            { name: "Couverture nuageuse", value: `${weatherObject.clouds} %`, inline: true },
-            { name: "Taux d'humidité", value: `${weatherObject.humidity} %`, inline: true },
-            { name: "Précipitations", value: `${weatherObject.precipitations} mm/h`, inline: true },
-            { name: "Chutes de neige", value: `${weatherObject.snow} mm/h`, inline: true },
-            { name: "Lever du soleil", value: weatherObject.sunrise, inline: true },
-            { name: "Coucher du soleil", value: weatherObject.sunset, inline: true },
-        )
+        .addField("Météo", weatherObject.weather, true)
+        .addField("Température", `${weatherObject.temp}°C`, true)
+        .addField("Ressenti", `${weatherObject.feeling}°C`, true)
+        .addField("Vitesse du vent", `${weatherObject.windSpeed} km/h`, true)
+        .addField("Direction du vent", weatherObject.windDirection, true)
+        .addField("Couverture nuageuse", `${weatherObject.clouds} %`, true)
+        .addField("Taux d'humidité", `${weatherObject.humidity} %`, true)
+        .addField("Précipitations", `${weatherObject.precipitations} mm/h`, true)
+        .addField("Chutes de neige", `${weatherObject.snow} mm/h`, true)
+        .addField("Lever du soleil", weatherObject.sunrise, true)
+        .addField("Coucher du soleil", weatherObject.sunset, true)
 
     return { embeds: [weatherEmbed] }
 }

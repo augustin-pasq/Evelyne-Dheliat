@@ -67,16 +67,14 @@ async function getWeather(search, mode, days) {
         let sunset = new Date()
         sunset.setUTCHours(parseInt(sunsetHour))
         sunset.setUTCMinutes(parseInt(sunsetMinutes))
-        sunset.toLocaleTimeString("fr-FR").split(":")
-        weatherObject.sunset = sunset[0] + ":" + sunset[1]
+        weatherObject.sunset = sunset.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })
 
         // Sunrise time
         let [sunriseHour, sunriseMinutes] = weatherData.data[0].sunrise.split(":")
         let sunrise = new Date()
         sunrise.setUTCHours(parseInt(sunriseHour))
         sunrise.setUTCMinutes(parseInt(sunriseMinutes))
-        sunrise.toLocaleTimeString("fr-FR").split(":")
-        weatherObject.sunrise = sunrise[0] + ":" + sunrise[1]
+        weatherObject.sunrise = sunrise.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })
 
         weatherEmbed
             .addField("Qualité de l'air", weatherObject.airQuality, true)
